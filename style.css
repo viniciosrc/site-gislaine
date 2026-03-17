@@ -35,6 +35,27 @@
             100% { transform: translateX(-100%); }
         }
 
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scroll Reveal Animation */
+        section {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        section.visible {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
         /* Hero Section */
         .hero {
             position: relative;
@@ -701,6 +722,9 @@
 
         .about-container .btn-instagram {
             margin-top: 32px;
+            margin-left: auto;
+            display: block;
+            width: fit-content;
         }
 
         .btn-instagram:hover {
