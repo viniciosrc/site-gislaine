@@ -38,7 +38,7 @@
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(80px);
             }
             to {
                 opacity: 1;
@@ -49,11 +49,16 @@
         /* Scroll Reveal Animation */
         section {
             opacity: 0;
-            animation: fadeInUp 0.8s ease-out forwards;
+            transform: translateY(80px);
+        }
+
+        section.hero {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         section.visible {
-            animation: fadeInUp 0.8s ease-out forwards;
+            animation: fadeInUp 2s ease-out forwards;
         }
 
         /* Hero Section */
@@ -329,19 +334,53 @@
         }
 
         .carousel-wrapper {
-            overflow: hidden;
             margin-bottom: 48px;
             margin-top: 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            min-height: 340px;
+        }
+
+        .carousel-btn {
+            background: rgba(109, 66, 138, 0.8);
+            color: #ffc8f1;
+            border: 2px solid #ffc8f1;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(109, 66, 138, 1);
+            transform: scale(1.1);
+        }
+
+        .carousel-wrapper .carousel {
+            flex: 1;
+            display: flex;
+            transition: transform 0.5s ease-out;
+            will-change: transform;
             position: relative;
         }
 
         .carousel {
             display: flex;
-            animation: slideCarousel 30s linear infinite;
         }
 
         .carousel:hover {
-            animation-play-state: paused;
+            /* nenhuma ação */
         }
 
         .zodiac-card {
@@ -722,9 +761,17 @@
 
         .about-container .btn-instagram {
             margin-top: 32px;
-            margin-left: auto;
             display: block;
+            margin-left: auto;
+            margin-right: auto;
             width: fit-content;
+        }
+
+        @media (min-width: 768px) {
+            .about-container .btn-instagram {
+                margin-left: 0;
+                margin-right: 0;
+            }
         }
 
         .btn-instagram:hover {
@@ -1594,6 +1641,25 @@
     }
     
     /* Testimonials already responsive with grid */
+}
+
+/* Carousel responsive */
+@media (max-width: 768px) {
+    .carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .zodiac-card {
+        width: 180px;
+        height: 220px;
+        margin: 0 12px;
+    }
+
+    .carousel-wrapper {
+        gap: 12px;
+    }
 }
 
 @media (max-width: 480px) {

@@ -182,9 +182,9 @@ const zodiacSigns = [
         // Criar carrossel de signos
         function createCarousel() {
             const carousel = document.getElementById('zodiacCarousel');
-            const tripled = [...zodiacSigns, ...zodiacSigns, ...zodiacSigns];
             
-            tripled.forEach(sign => {
+            // Create original 12 cards only
+            zodiacSigns.forEach(sign => {
                 const card = document.createElement('div');
                 card.className = 'zodiac-card';
                 card.innerHTML = `
@@ -200,6 +200,97 @@ const zodiacSigns = [
                 `;
                 carousel.appendChild(card);
             });
+
+            // Carousel Navigation
+            const carouselElement = document.getElementById('zodiacCarousel');
+            const prevBtn = document.getElementById('carouselPrev');
+            const nextBtn = document.getElementById('carouselNext');
+            const cardWidth = 256 + 32; // card width + gap
+            const totalCards = zodiacSigns.length;
+            
+            let currentIndex = 0;
+            let autoScrollInterval = null;
+            let isAutoScrolling = true;
+
+            function updateCarouselPosition() {
+                const maxIndex = totalCards - 1;
+                const safeIndex = Math.min(currentIndex, maxIndex);
+                const offset = -(safeIndex * cardWidth);
+                carouselElement.style.transform = `translateX(${offset}px)`;
+            }
+
+            function autoScroll() {
+                if (!isAutoScrolling) return;
+                
+                currentIndex = (currentIndex + 1) % totalCards;
+                updateCarouselPosition();
+            }
+
+            function startAutoScroll() {
+                if (autoScrollInterval) clearInterval(autoScrollInterval);
+                isAutoScrolling = true;
+                autoScrollInterval = setInterval(autoScroll, 3000); // Change card every 3 seconds
+            }
+
+            function stopAutoScroll() {
+                if (autoScrollInterval) clearInterval(autoScrollInterval);
+                autoScrollInterval = null;
+                isAutoScrolling = false;
+            }
+
+            function pauseAutoScroll(duration = 5000) {
+                stopAutoScroll();
+                setTimeout(() => startAutoScroll(), duration);
+            }
+
+            function movePrev() {
+                stopAutoScroll();
+                currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+                updateCarouselPosition();
+                pauseAutoScroll(5000);
+            }
+
+            function moveNext() {
+                stopAutoScroll();
+                currentIndex = (currentIndex + 1) % totalCards;
+                updateCarouselPosition();
+                pauseAutoScroll(5000);
+            }
+
+            prevBtn.addEventListener('click', movePrev);
+            nextBtn.addEventListener('click', moveNext);
+
+            // Click on cards to pause
+            document.querySelectorAll('.zodiac-card').forEach(card => {
+                card.addEventListener('click', () => pauseAutoScroll(5000));
+            });
+
+            // Touch/Swipe support
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            carouselElement.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].clientX;
+                stopAutoScroll();
+            }, false);
+
+            carouselElement.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].clientX;
+                const diff = touchStartX - touchEndX;
+                
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        moveNext(); // Swipe left
+                    } else {
+                        movePrev(); // Swipe right
+                    }
+                } else {
+                    pauseAutoScroll(5000);
+                }
+            }, false);
+
+            // Start auto scroll
+            startAutoScroll();
         }
 
 
@@ -311,14 +402,16 @@ const zodiacSigns = [
 
         // Scroll Reveal Animation
         const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
+            threshold: 0,
+            rootMargin: '0px 0px -80px 0px'
         };
 
         const observer = new IntersectionObserver(function(entries) {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, 100);
                     observer.unobserve(entry.target);
                 }
             });
@@ -327,6 +420,12 @@ const zodiacSigns = [
         document.querySelectorAll('section').forEach(section => {
             observer.observe(section);
         });
+
+        // Tornar a seção hero visível imediatamente (sem animation)
+        const heroSection = document.querySelector('.hero');
+        if (heroSection) {
+            heroSection.classList.add('visible');
+        }
 
         // Inicializar
         createStars('floatingStars', 20);
